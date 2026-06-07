@@ -12,7 +12,9 @@ function Home() {
 
   const fetchFoods = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/food");
+      const res = await axios.get(
+        "https://surplusshare-1.onrender.com/api/food",
+      );
       setFoods(res.data);
     } catch (err) {
       console.error(err);
@@ -29,7 +31,7 @@ function Home() {
 
     try {
       const res = await axios.put(
-        `http://localhost:5000/api/food/claim/${id}`,
+        `https://surplusshare-1.onrender.com/api/food/claim/${id}`,
         {},
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },

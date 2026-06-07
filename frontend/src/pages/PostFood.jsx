@@ -37,7 +37,7 @@ function PostFood() {
     if (image) data.append("image", image);
 
     try {
-      await axios.post("http://localhost:5000/api/food", data, {
+      await axios.post("https://surplusshare-1.onrender.com/api/food", data, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${localStorage.getItem("token")}`,

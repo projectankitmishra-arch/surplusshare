@@ -11,9 +11,12 @@ function MyListings() {
 
   const fetchMyListings = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/food/my", {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      });
+      const res = await axios.get(
+        "https://surplusshare-1.onrender.com/api/food/my",
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        },
+      );
       setListings(res.data);
     } catch (err) {
       console.error(err);
