@@ -15,20 +15,20 @@ function Navbar() {
   };
 
   return (
-    <nav className="bg-emerald-900/95 backdrop-blur-md text-white shadow-xl sticky top-0 z-50 border-b border-emerald-800">
+    <nav className="bg-emerald-900 text-white shadow-lg sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-6 py-5">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="text-4xl drop-shadow-md">🌱</div>
-            <h1 className="text-3xl font-bold tracking-tighter">
-              SurplusShare
-            </h1>
+            <div className="text-4xl">🌱</div>
+            <h1 className="text-3xl font-bold tracking-tight">SurplusShare</h1>
           </div>
 
+          {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-10 text-base font-medium">
             <Link to="/" className="hover:text-emerald-200 transition-colors">
               Home
             </Link>
+
             {user ? (
               <>
                 <Link
@@ -60,13 +60,62 @@ function Navbar() {
             )}
           </div>
 
+          {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="md:hidden p-2"
           >
-            {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
+            {isMenuOpen ? <X size={32} /> : <Menu size={32} />}
           </button>
         </div>
+
+        {/* Mobile Menu */}
+        {isMenuOpen && (
+          <div className="md:hidden mt-6 py-6 border-t border-emerald-700">
+            <div className="flex flex-col gap-6 text-lg">
+              <Link
+                to="/"
+                onClick={() => setIsMenuOpen(false)}
+                className="hover:text-emerald-200"
+              >
+                Home
+              </Link>
+
+              {user ? (
+                <>
+                  <Link
+                    to="/post"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="hover:text-emerald-200"
+                  >
+                    Post Food
+                  </Link>
+                  <Link
+                    to="/my-listings"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="hover:text-emerald-200"
+                  >
+                    My Listings
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="text-left hover:text-red-400"
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <Link
+                  to="/login"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="hover:text-emerald-200"
+                >
+                  Login
+                </Link>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </nav>
   );
