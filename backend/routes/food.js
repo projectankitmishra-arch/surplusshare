@@ -14,7 +14,7 @@ cloudinary.config({
 
 const upload = multer({ storage: multer.memoryStorage() });
 
-// Post Food
+// ==================== POST FOOD ====================
 router.post('/', protect, upload.single('image'), async (req, res) => {
   try {
     let imageUrl = '';
@@ -49,11 +49,34 @@ router.post('/', protect, upload.single('image'), async (req, res) => {
   }
 });
 
-// Get Available Food
+// ==================== GET AVAILABLE FOOD (with Auto Expiry Check) ====================
 router.get('/', async (req, res) => {
   try {
+    const now = new Date();
+
+    // Auto mark expired foods before showing
+    await FoodListing.updateMany(
+      { 
+        expiryDate: { $lt: now },
+        status: 'available'
+      },
+      { status: 'expired' }
+    );
+
     const foods = await FoodListing.find({ status: "available" })
       .populate('donor', 'name phone')
+      .sort({ createdAt: -1 });
+
+    res.json(foods);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// ==================== MY LISTINGS ====================
+router.get('/my', protect, async (req, res) => {
+  try {
+    const foods = await FoodListing.find({ donor: req.user.id })
       .sort({ createdAt: -1 });
     res.json(foods);
   } catch (error) {
@@ -61,24 +84,14 @@ router.get('/', async (req, res) => {
   }
 });
 
-// My Listings
-router.get('/my', protect, async (req, res) => {
-  try {
-    const foods = await FoodListing.find({ donor: req.user.id });
-    res.json(foods);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
 
-// Claim Food
 router.put('/claim/:id', protect, async (req, res) => {
   try {
     const food = await FoodListing.findById(req.params.id);
 
     if (!food) return res.status(404).json({ message: "Food not found" });
     if (food.status !== 'available') {
-      return res.status(400).json({ message: "Food already claimed" });
+      return res.status(400).json({ message: "Food already claimed or expired" });
     }
 
     const donor = await User.findById(food.donor);
