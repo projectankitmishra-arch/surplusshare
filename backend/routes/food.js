@@ -14,7 +14,7 @@ cloudinary.config({
 
 const upload = multer({ storage: multer.memoryStorage() });
 
-// ==================== POST FOOD ====================
+// Post Food
 router.post('/', protect, upload.single('image'), async (req, res) => {
   try {
     let imageUrl = '';
@@ -49,12 +49,12 @@ router.post('/', protect, upload.single('image'), async (req, res) => {
   }
 });
 
-// ==================== GET AVAILABLE FOOD (with Auto Expiry Check) ====================
+// Get Available Food + Auto Expiry Check
 router.get('/', async (req, res) => {
   try {
     const now = new Date();
 
-    // Auto mark expired foods before showing
+    // Auto expiry check on every request
     await FoodListing.updateMany(
       { 
         expiryDate: { $lt: now },
@@ -73,7 +73,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// ==================== MY LISTINGS ====================
+// My Listings
 router.get('/my', protect, async (req, res) => {
   try {
     const foods = await FoodListing.find({ donor: req.user.id })
@@ -84,7 +84,7 @@ router.get('/my', protect, async (req, res) => {
   }
 });
 
-
+// Claim Food
 router.put('/claim/:id', protect, async (req, res) => {
   try {
     const food = await FoodListing.findById(req.params.id);
